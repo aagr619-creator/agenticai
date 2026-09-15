@@ -101,6 +101,16 @@ crew = Crew(
 
 
 def ask(query: str) -> str:
+    # crew.kickoff() re-runs agent.set_knowledge() -> source.add() on every
+    # call, and add() does self.chunks.extend(...) instead of replacing.
+    # Since these are the same source objects across kickoffs, chunks would
+    # otherwise double up on kickoff 2+ and hit chromadb's DuplicateIDError
+    # (content-hash IDs repeated within the same upsert). Clear them first
+    # so each kickoff re-adds exactly one copy.
+    for source in advisor.knowledge_sources:
+        source.chunks = []
+        source.chunk_embeddings = []
+
     task = Task(
         description=query,
         expected_output="A plain-English answer, using the glossary for any jargon, respecting known risk tolerance",

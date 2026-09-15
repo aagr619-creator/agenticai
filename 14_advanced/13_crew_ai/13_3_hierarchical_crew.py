@@ -94,6 +94,7 @@ research_manager = Agent(
         "to the right specialist analyst, review their findings, decide if anything needs "
         "more work, and coordinate everything into one final recommendation. You never do "
         "the specialist research yourself - you only delegate, review, and synthesize."
+        " Try for a maximimum of 5 steps/iterations."
     ),
     llm="gpt-4o-mini",
     verbose=True,
